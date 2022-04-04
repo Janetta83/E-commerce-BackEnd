@@ -1,2 +1,1 @@
-# E-commerce-BackEnd
-Challenge 13
+# E-commerce Back End Starter Code
