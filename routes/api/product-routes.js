@@ -19,6 +19,33 @@ router.get('/', (req, res) => {
 router.get('/:id', (req, res) => {
   // find a single product by its `id`
   // be sure to include its associated Category and Tag data
+  Product.findOne({
+    where: {
+      id. req.params.id,
+    },
+    include: [
+      {
+        model: Category,
+        attributes: ['id', 'category_name'],
+      },
+      {
+        model: Tag,
+        through: ProductTag,
+        as: 'tags',
+      },
+    ],
+  })
+  .then((dbProductData) => {
+    if (!dbProductData) {
+      res.status(404).json({ message: "No product was found using that ID"});
+      return;
+    }
+    res.json(dbProductData);
+  })
+  .catch((err) => {
+    console.log(err);
+    res.status(500).json(err);
+  });
 });
 
 // create new product
@@ -97,6 +124,22 @@ router.put('/:id', (req, res) => {
 
 router.delete('/:id', (req, res) => {
   // delete one product by its `id` value
+  Product.destroy({
+    where: {
+      id: req.params.id,
+    },
+  })
+  .then((dbProductData) => {
+    if (!dbProductData) {
+      res.status(404).json({ message: "No product found using this ID"});
+      return;
+    }
+    res.json(dbProductData);
+  })
+  .catch((err) => {
+    console.log(err);
+    res.status(500).json(err);
+  });
 });
 
 module.exports = router;
